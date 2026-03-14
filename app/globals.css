@@ -1,0 +1,224 @@
+@import "tailwindcss";
+
+/* ========== DESIGN SYSTEM — iOS 26 Liquid Glass + Neon Futurism ========== */
+:root {
+  /* Background */
+  --void-black: #020208;
+  --background: #020208;
+
+  /* Neon orbs (blurred radial gradients) */
+  --neon-purple: #7C3AED;
+  --neon-cyan: #06B6D4;
+  --neon-rose: #F43F5E;
+  --neon-emerald: #10B981;
+
+  /* Accent neon */
+  --accent-cyan: #00D4FF;
+  --accent-purple: #8B5CF6;
+  --accent-rose: #FF2D78;
+  --accent-mint: #00FFB3;
+
+  /* Glass */
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-blur: 24px;
+  --glass-saturate: 180%;
+
+  /* Typography */
+  --font-display: var(--font-syne), system-ui, sans-serif;
+  --font-body: var(--font-dm-sans), system-ui, sans-serif;
+  --foreground: rgba(255, 255, 255, 0.92);
+  --foreground-muted: rgba(255, 255, 255, 0.6);
+
+  /* Glow */
+  --glow-cyan: 0 0 20px rgba(0, 212, 255, 0.4), 0 0 40px rgba(0, 212, 255, 0.2);
+  --glow-purple: 0 0 20px rgba(139, 92, 246, 0.4), 0 0 40px rgba(139, 92, 246, 0.2);
+  --glow-rose: 0 0 20px rgba(255, 45, 120, 0.4), 0 0 40px rgba(255, 45, 120, 0.2);
+  --glow-mint: 0 0 20px rgba(0, 255, 179, 0.4), 0 0 40px rgba(0, 255, 179, 0.2);
+
+  /* Cursor orb (set via JS) */
+  --cursor-x: 50%;
+  --cursor-y: 50%;
+}
+
+@theme inline {
+  --color-void: var(--void-black);
+  --color-neon-cyan: var(--accent-cyan);
+  --color-neon-purple: var(--accent-purple);
+  --color-neon-rose: var(--accent-rose);
+  --color-neon-mint: var(--accent-mint);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
+}
+
+/* Base */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--void-black);
+  color: var(--foreground);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar — thin neon cyan */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--accent-cyan), var(--accent-purple));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-cyan);
+  box-shadow: 0 0 10px var(--accent-cyan);
+}
+
+/* Liquid glass panel base */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: 1px solid var(--glass-border);
+}
+
+.glass-strong {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Neon glow utilities */
+.glow-cyan {
+  box-shadow: var(--glow-cyan);
+}
+
+.glow-purple {
+  box-shadow: var(--glow-purple);
+}
+
+.glow-rose {
+  box-shadow: var(--glow-rose);
+}
+
+.glow-mint {
+  box-shadow: var(--glow-mint);
+}
+
+/* Animated gradient text */
+.gradient-text {
+  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple), var(--accent-rose));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-shift 4s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% center; }
+  50% { background-position: 100% center; }
+}
+
+/* Floating neon orbs — keyframes */
+@keyframes drift {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.6; }
+  25% { transform: translate(30px, -20px) scale(1.05); opacity: 0.8; }
+  50% { transform: translate(-20px, 30px) scale(0.95); opacity: 0.5; }
+  75% { transform: translate(20px, 20px) scale(1.02); opacity: 0.7; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.5; filter: blur(60px); }
+  50% { opacity: 0.8; filter: blur(80px); }
+}
+
+@keyframes float-card {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Neon line pulse */
+@keyframes line-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+.neon-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+  opacity: 0.6;
+  animation: line-pulse 2s ease-in-out infinite;
+}
+
+/* Skeleton loading */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 0%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+/* Focus ring — neon */
+input:focus, button:focus-visible, select:focus, textarea:focus, a:focus-visible {
+  outline: none;
+}
+
+.focus-neon:focus-visible {
+  box-shadow: 0 0 0 2px var(--void-black), 0 0 20px rgba(0, 212, 255, 0.5);
+}
+
+/* Button base with ripple capability */
+.btn-glass {
+  position: relative;
+  overflow: hidden;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: 1px solid var(--glass-border);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.btn-glass:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: var(--glow-cyan);
+}
+
+.btn-neon {
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+}
+
+.btn-neon:hover {
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.5), 0 0 60px rgba(139, 92, 246, 0.3);
+  transform: scale(1.02);
+}

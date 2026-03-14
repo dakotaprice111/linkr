@@ -1,0 +1,103 @@
+// Prisma schema for DropLink Platform
+// https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  name           String
+  passwordHash   String?
+  role           Role      @default(INFLUENCER)
+  niches         String[]
+  instagramHandle String?
+  tiktokHandle   String?
+  youtubeHandle  String?
+  isActive       Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  trackingLinks  TrackingLink[]
+  payoutMethods  PayoutMethod[]
+  payouts        Payout[]
+}
+
+model Product {
+  id            String         @id @default(cuid())
+  name          String
+  description   String
+  price         Float
+  imageUrls     String[]
+  niche         String
+  commissionPct Float
+  isActive      Boolean        @default(true)
+  createdAt     DateTime       @default(now())
+  trackingLinks TrackingLink[]
+}
+
+model TrackingLink {
+  id        String       @id @default(cuid())
+  userId    String
+  productId String
+  slug      String       @unique
+  clicks    Int          @default(0)
+  sales     Int          @default(0)
+  earnings  Float        @default(0)
+  createdAt DateTime     @default(now())
+  user      User         @relation(fields: [userId], references: [id])
+  product   Product      @relation(fields: [productId], references: [id])
+  events    ClickEvent[]
+}
+
+model ClickEvent {
+  id              String       @id @default(cuid())
+  trackingLinkId  String
+  ipAddress       String?
+  country         String?
+  source          String?
+  convertedToSale Boolean      @default(false)
+  createdAt       DateTime     @default(now())
+  trackingLink    TrackingLink @relation(fields: [trackingLinkId], references: [id])
+}
+
+model PayoutMethod {
+  id        String     @id @default(cuid())
+  userId    String
+  type      PayoutType
+  details   Json
+  isPrimary Boolean    @default(false)
+  user      User       @relation(fields: [userId], references: [id])
+}
+
+model Payout {
+  id        String       @id @default(cuid())
+  userId    String
+  amount    Float
+  status    PayoutStatus @default(PENDING)
+  method    String
+  createdAt DateTime     @default(now())
+  user      User         @relation(fields: [userId], references: [id])
+}
+
+enum Role {
+  INFLUENCER
+  ADMIN
+}
+
+enum PayoutType {
+  PAYPAL
+  STRIPE
+  BANK
+}
+
+enum PayoutStatus {
+  PENDING
+  PROCESSING
+  PAID
+  FAILED
+}
