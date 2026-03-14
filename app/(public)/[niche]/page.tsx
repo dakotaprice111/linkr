@@ -5,6 +5,7 @@ import { NicheStorefront } from "@/components/products/NicheStorefront";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
+// Uses Offer model (category = niche)
 
 type Props = { params: Promise<{ niche: string }> };
 
