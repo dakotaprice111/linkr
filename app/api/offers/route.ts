@@ -12,24 +12,20 @@ export async function GET(req: Request) {
     const limit = Math.min(24, Math.max(1, parseInt(searchParams.get("limit") ?? "12", 10)));
     const skip = (page - 1) * limit;
 
-    const where: {
-      isActive: boolean;
-      isApproved?: boolean;
-      category?: string;
-      type?: string;
-      OR?: { name: { contains: string; mode: "insensitive" }; description: { contains: string; mode: "insensitive" } }[];
-    } = {
+    const where = {
       isActive: true,
       isApproved: true,
+      ...(category ? { category } : {}),
+      ...(type ? { type: type as "PRODUCT" | "WEBSITE" | "APP" | "SAAS" | "COURSE" | "SERVICE" | "DIGITAL" } : {}),
+      ...(q
+        ? {
+            OR: [
+              { name: { contains: q, mode: "insensitive" as const } },
+              { description: { contains: q, mode: "insensitive" as const } },
+            ],
+          }
+        : {}),
     };
-    if (category) where.category = category;
-    if (type) where.type = type as "PRODUCT" | "WEBSITE" | "APP" | "SAAS" | "COURSE" | "SERVICE" | "DIGITAL";
-    if (q) {
-      where.OR = [
-        { name: { contains: q, mode: "insensitive" as const } },
-        { description: { contains: q, mode: "insensitive" as const } },
-      ];
-    }
 
     const orderBy =
       sort === "commission"
