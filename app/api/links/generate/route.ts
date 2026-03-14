@@ -5,7 +5,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 
-const schema = z.object({ productId: z.string().min(1) });
+const schema = z.object({ offerId: z.string().min(1) });
 
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
@@ -15,15 +15,15 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json();
-    const { productId } = schema.parse(body);
+    const { offerId } = schema.parse(body);
 
-    const product = await prisma.product.findUnique({ where: { id: productId } });
-    if (!product?.isActive) {
-      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    const offer = await prisma.offer.findUnique({ where: { id: offerId } });
+    if (!offer?.isActive) {
+      return NextResponse.json({ error: "Offer not found" }, { status: 404 });
     }
 
     const existing = await prisma.trackingLink.findFirst({
-      where: { userId: session.user.id, productId },
+      where: { userId: session.user.id, offerId },
     });
     if (existing) {
       return NextResponse.json({ link: existing, existing: true });
@@ -35,11 +35,11 @@ export async function POST(req: Request) {
     const link = await prisma.trackingLink.create({
       data: {
         userId: session.user.id,
-        productId,
+        offerId,
         slug,
         fullUrl,
       },
-      include: { product: true },
+      include: { offer: true },
     });
 
     return NextResponse.json({ link, existing: false });

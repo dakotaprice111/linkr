@@ -8,7 +8,7 @@ export async function GET(
   try {
     const { id } = await params;
     const proofs = await prisma.productVideoProof.findMany({
-      where: { productId: id },
+      where: { offerId: id },
       orderBy: { viewCount: "desc" },
       take: 12,
     });

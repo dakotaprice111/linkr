@@ -62,14 +62,14 @@ export function NicheStorefront({ niche, products }: Props) {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {products.map((p) => (
-                <Link key={p.id} href={`/products/${p.id}`}>
+                <Link key={p.id} href={`/browse/${p.id}`}>
                   <GlassCard>
                     <div className="aspect-square rounded-t-2xl bg-white/5 bg-cover bg-center" style={{ backgroundImage: p.imageUrls?.[0] ? `url(${p.imageUrls[0]})` : undefined }} />
                     <div className="p-4">
                       <h3 className="font-display font-semibold text-white truncate">{p.name}</h3>
                       <p className="text-white/60 text-sm line-clamp-1">{p.description}</p>
                       <div className="mt-2 flex justify-between items-center">
-                        <span className="text-lg font-bold text-white">${p.price.toFixed(2)}</span>
+                        <span className="text-lg font-bold text-white">${(p.price ?? 0).toFixed(2)}</span>
                         <span className="text-sm font-medium text-emerald-400">Earn {p.commissionPct}%</span>
                       </div>
                     </div>

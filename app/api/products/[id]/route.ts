@@ -7,18 +7,18 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const product = await prisma.product.findUnique({
+    const offer = await prisma.offer.findUnique({
       where: { id },
       include: {
         trackingLinks: { take: 5 },
       },
     });
-    if (!product) {
-      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    if (!offer) {
+      return NextResponse.json({ error: "Offer not found" }, { status: 404 });
     }
-    return NextResponse.json(product);
+    return NextResponse.json(offer);
   } catch (e) {
-    console.error("Product get error:", e);
-    return NextResponse.json({ error: "Failed to fetch product" }, { status: 500 });
+    console.error("Offer get error:", e);
+    return NextResponse.json({ error: "Failed to fetch offer" }, { status: 500 });
   }
 }

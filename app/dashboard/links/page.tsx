@@ -14,7 +14,7 @@ type LinkRow = {
   sales: number;
   earnings: number;
   createdAt: string;
-  product: { name: string; imageUrls: string[] };
+  offer: { name: string; imageUrls: string[] };
 };
 
 export default function DashboardLinksPage() {
@@ -57,7 +57,7 @@ export default function DashboardLinksPage() {
           <table className="w-full">
             <thead>
               <tr className="text-left text-white/60 text-sm border-b border-white/10">
-                <th className="pb-4 pr-4">Product</th>
+                <th className="pb-4 pr-4">Offer</th>
                 <th className="pb-4 pr-4">Tracking URL</th>
                 <th className="pb-4 pr-4">Clicks</th>
                 <th className="pb-4 pr-4">Sales</th>
@@ -70,7 +70,7 @@ export default function DashboardLinksPage() {
               {links.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="py-12 text-center text-white/50">
-                    No tracking links yet. Go to Products and click &quot;Copy Link&quot; to create one.
+                    No tracking links yet. Go to Browse and click &quot;Get My Link&quot; to create one.
                   </td>
                 </tr>
               ) : (
@@ -80,9 +80,9 @@ export default function DashboardLinksPage() {
                       <div className="flex items-center gap-3">
                         <div
                           className="w-10 h-10 rounded-lg bg-white/10 bg-cover bg-center flex-shrink-0"
-                          style={{ backgroundImage: link.product?.imageUrls?.[0] ? `url(${link.product.imageUrls[0]})` : undefined }}
+                          style={{ backgroundImage: link.offer?.imageUrls?.[0] ? `url(${link.offer.imageUrls[0]})` : undefined }}
                         />
-                        <span className="text-white font-medium">{link.product?.name ?? "—"}</span>
+                        <span className="text-white font-medium">{link.offer?.name ?? "—"}</span>
                       </div>
                     </td>
                     <td className="py-4 pr-4">

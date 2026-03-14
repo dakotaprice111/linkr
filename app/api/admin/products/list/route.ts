@@ -12,6 +12,6 @@ export async function GET() {
   if (user?.role !== "ADMIN") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
-  const products = await prisma.product.findMany({ orderBy: { createdAt: "desc" } });
-  return NextResponse.json(products);
+  const offers = await prisma.offer.findMany({ orderBy: { createdAt: "desc" } });
+  return NextResponse.json(offers);
 }

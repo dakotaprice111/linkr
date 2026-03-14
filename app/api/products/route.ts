@@ -13,7 +13,8 @@ export async function GET(req: Request) {
 
     const where = {
       isActive: true,
-      ...(niche ? { niche } : {}),
+      isApproved: true,
+      ...(niche ? { category: niche } : {}),
       ...(q
         ? {
             OR: [
@@ -36,13 +37,13 @@ export async function GET(req: Request) {
               : { createdAt: "desc" };
 
     const [products, total] = await Promise.all([
-      prisma.product.findMany({
+      prisma.offer.findMany({
         where,
         orderBy,
         skip,
         take: limit,
       }),
-      prisma.product.count({ where }),
+      prisma.offer.count({ where }),
     ]);
 
     return NextResponse.json({

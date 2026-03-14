@@ -12,7 +12,7 @@ export async function GET() {
   try {
     const links = await prisma.trackingLink.findMany({
       where: { userId: session.user.id },
-      include: { product: true },
+      include: { offer: true },
       orderBy: { createdAt: "desc" },
     });
     return NextResponse.json(links);
