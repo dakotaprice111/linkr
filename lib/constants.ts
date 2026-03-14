@@ -67,3 +67,13 @@ export const SORT_OPTIONS = [
   { value: "price-asc", label: "Price Low → High" },
   { value: "price-desc", label: "Price High → Low" },
 ] as const;
+
+export const OFFER_TYPES = [
+  { value: "PRODUCT", label: "Products" },
+  { value: "WEBSITE", label: "Websites" },
+  { value: "APP", label: "Apps" },
+  { value: "SAAS", label: "SaaS" },
+  { value: "COURSE", label: "Courses" },
+  { value: "SERVICE", label: "Services" },
+  { value: "DIGITAL", label: "Digital" },
+] as const;

@@ -12,14 +12,20 @@ import {
   CreditCard,
   Radio,
   LogOut,
+  Gift,
+  DollarSign,
+  Settings,
 } from "lucide-react";
 
 const nav = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
   { href: "/dashboard/links", label: "My Links", icon: Link2 },
   { href: "/dashboard/analytics", label: "Analytics", icon: BarChart3 },
+  { href: "/dashboard/earnings", label: "Earnings", icon: DollarSign },
+  { href: "/dashboard/referrals", label: "Referrals", icon: Gift },
   { href: "/dashboard/products", label: "Products", icon: Package },
   { href: "/dashboard/payout", label: "Payout", icon: CreditCard },
+  { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {

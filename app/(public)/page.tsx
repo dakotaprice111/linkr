@@ -1,6 +1,8 @@
 import { Hero } from "@/components/landing/Hero";
 import { NicheStrip } from "@/components/landing/NicheStrip";
 import { FeaturedProducts } from "@/components/landing/FeaturedProducts";
+import { DualValueProp } from "@/components/landing/DualValueProp";
+import { ReferralHighlight } from "@/components/landing/ReferralHighlight";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { NicheShowcase } from "@/components/landing/NicheShowcase";
 import { StatsCounter } from "@/components/landing/StatsCounter";
@@ -13,6 +15,8 @@ export default function HomePage() {
       <NicheStrip />
       <div className="max-w-7xl mx-auto px-4">
         <FeaturedProducts />
+        <DualValueProp />
+        <ReferralHighlight />
         <HowItWorks />
         <NicheShowcase />
         <StatsCounter />

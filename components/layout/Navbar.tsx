@@ -9,10 +9,11 @@ import { NeonButton } from "@/components/ui/NeonButton";
 
 const navLinks = [
   { href: "/", label: "Home" },
-  { href: "/products", label: "Products" },
-  { href: "/products#niches", label: "Niches" },
+  { href: "/browse", label: "Browse" },
+  { href: "/how-it-works", label: "How It Works" },
+  { href: "/pricing", label: "Pricing" },
   { href: "/about", label: "About" },
-  { href: "/dashboard", label: "For Influencers" },
+  { href: "/dashboard", label: "Creators" },
 ];
 
 export function Navbar() {
@@ -53,7 +54,7 @@ export function Navbar() {
             >
               <Hexagon className="w-7 h-7" strokeWidth={2} />
             </motion.span>
-            <span className="font-display font-bold text-xl gradient-text">DROPLINK</span>
+            <span className="font-display font-bold text-xl gradient-text">LINKR</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">

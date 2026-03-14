@@ -20,12 +20,12 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "DropLink — The Future of Influencer Commerce",
+  title: "LINKR — Promote Anything. Earn Everything.",
   description:
-    "Connect. Share. Earn. Multi-niche dropshipping powered by real creators.",
+    "Promote products, websites, apps, SaaS, courses and services. Multi-niche influencer affiliate platform for creators and brands.",
   openGraph: {
-    title: "DropLink — The Future of Influencer Commerce",
-    description: "Connect. Share. Earn. Multi-niche dropshipping powered by real creators.",
+    title: "LINKR — Promote Anything. Earn Everything.",
+    description: "Promote products, websites, apps, SaaS, courses and services.",
   },
 };
 

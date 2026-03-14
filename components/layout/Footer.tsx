@@ -7,8 +7,8 @@ import { NeonButton } from "@/components/ui/NeonButton";
 
 const footerLinks = {
   Product: [
-    { href: "/products", label: "Products" },
-    { href: "/products#niches", label: "Niches" },
+    { href: "/browse", label: "Browse" },
+    { href: "/browse#categories", label: "Categories" },
     { href: "/about", label: "About" },
   ],
   Creators: [
@@ -36,10 +36,10 @@ export function Footer() {
           <div className="md:col-span-1 flex flex-col gap-4">
             <Link href="/" className="flex items-center gap-2">
               <Hexagon className="w-6 h-6 text-[var(--accent-cyan)]" />
-              <span className="font-display font-bold text-lg gradient-text">DROPLINK</span>
+              <span className="font-display font-bold text-lg gradient-text">LINKR</span>
             </Link>
             <p className="text-white/60 text-sm">
-              The future of influencer commerce. Connect, share, earn.
+              Promote anything. Earn everything. linkr.io
             </p>
             <div className="flex gap-4">
               {socials.map((s) => (

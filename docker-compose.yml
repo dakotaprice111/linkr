@@ -1,0 +1,16 @@
+# Local PostgreSQL for development. Run: docker compose up -d
+# Then use in .env: DATABASE_URL="postgresql://postgres:postgres@localhost:5432/droplink"
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: droplink
+    ports:
+      - "5432:5432"
+    volumes:
+      - droplink_pg_data:/var/lib/postgresql/data
+
+volumes:
+  droplink_pg_data:

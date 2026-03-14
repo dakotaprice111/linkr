@@ -48,9 +48,25 @@ Copy the example file and fill in values:
 cp .env.example .env
 ```
 
+**Easiest: use local Postgres with Docker**
+
+```bash
+docker compose up -d
+```
+
+Then in `.env` set:
+
+```
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/droplink?schema=public"
+NEXTAUTH_SECRET=any-random-string-at-least-32-chars
+NEXTAUTH_URL=http://localhost:3000
+```
+
+(No Docker? Use a free [Neon](https://neon.tech) or [Supabase](https://supabase.com) Postgres and paste their connection string as `DATABASE_URL`.)
+
 | Variable | Description |
 |----------|-------------|
-| `DATABASE_URL` | PostgreSQL connection string (e.g. `postgresql://user:pass@localhost:5432/droplink`) |
+| `DATABASE_URL` | PostgreSQL URL: `postgresql://USER:PASSWORD@HOST:PORT/DATABASE` (user must not be empty) |
 | `NEXTAUTH_SECRET` | Random string for JWT signing (e.g. `openssl rand -base64 32`) |
 | `NEXTAUTH_URL` | App URL (e.g. `http://localhost:3000`) |
 | `GOOGLE_CLIENT_ID` | Optional; Google OAuth client ID |

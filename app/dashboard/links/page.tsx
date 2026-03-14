@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 type LinkRow = {
   id: string;
   slug: string;
+  fullUrl: string;
   clicks: number;
   sales: number;
   earnings: number;
@@ -28,10 +29,10 @@ export default function DashboardLinksPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const copyLink = (slug: string) => {
-    const url = `${window.location.origin}/api/links/${slug}?utm_source=instagram`;
+  const copyLink = (fullUrl: string, slug: string) => {
+    const url = fullUrl || `${window.location.origin}/go/${slug}`;
     navigator.clipboard.writeText(url);
-    toast.success("Copied! Paste in your bio.");
+    toast.success("Copied!");
   };
 
   if (loading) {
@@ -85,8 +86,8 @@ export default function DashboardLinksPage() {
                       </div>
                     </td>
                     <td className="py-4 pr-4">
-                      <code className="text-xs text-white/70 truncate max-w-[180px] block">
-                        /api/links/{link.slug}
+                      <code className="text-xs text-white/70 truncate max-w-[220px] block" title={link.fullUrl || `${typeof window !== "undefined" ? window.location.origin : ""}/go/${link.slug}`}>
+                        {link.fullUrl || `/go/${link.slug}`}
                       </code>
                     </td>
                     <td className="py-4 pr-4 text-white">{link.clicks}</td>
@@ -99,18 +100,20 @@ export default function DashboardLinksPage() {
                       <div className="flex gap-2">
                         <button
                           type="button"
-                          onClick={() => {
-                            navigator.clipboard.writeText(`${window.location.origin}/api/links/${link.slug}`);
-                            toast.success("Link copied!");
-                          }}
+                          onClick={() => copyLink(link.fullUrl, link.slug)}
                           className="p-2 rounded-lg glass border border-white/10 text-white/80 hover:text-[var(--accent-cyan)]"
+                          title="Copy link"
                         >
                           <Copy className="w-4 h-4" />
                         </button>
                         <button
                           type="button"
-                          onClick={() => copyLink(link.slug)}
+                          onClick={() => {
+                            copyLink(link.fullUrl, link.slug);
+                            toast.success("Copied! Paste in your bio.");
+                          }}
                           className="p-2 rounded-lg glass border border-white/10 text-white/80 hover:text-[var(--accent-cyan)]"
+                          title="Copy with UTM for bio"
                         >
                           <Share2 className="w-4 h-4" />
                         </button>

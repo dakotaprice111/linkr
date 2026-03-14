@@ -2,13 +2,23 @@
 
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Copy, ChevronRight } from "lucide-react";
+import { Copy, ChevronRight, Play } from "lucide-react";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { NeonButton } from "@/components/ui/NeonButton";
 import { NICHE_LABELS, NICHE_COLORS } from "@/lib/constants";
 import toast from "react-hot-toast";
+
+type VideoProof = {
+  id: string;
+  platform: string;
+  creatorName: string;
+  videoUrl: string;
+  viewCount: number;
+  likeCount: number;
+  isVerified: boolean;
+};
 
 type Product = {
   id: string;
@@ -31,6 +41,14 @@ export function ProductDetailClient({ product, related }: Props) {
   const { data: session } = useSession();
   const [tab, setTab] = useState(0);
   const [copying, setCopying] = useState(false);
+  const [socialProof, setSocialProof] = useState<{ proofs: VideoProof[] } | null>(null);
+
+  useEffect(() => {
+    fetch(`/api/products/${product.id}/social-proof`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then(setSocialProof)
+      .catch(() => setSocialProof(null));
+  }, [product.id]);
 
   const copyTrackingLink = async () => {
     if (!session) {
@@ -47,7 +65,7 @@ export function ProductDetailClient({ product, related }: Props) {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed");
-      const url = `${window.location.origin}/api/links/${data.link.slug}`;
+      const url = data.link.fullUrl || `${window.location.origin}/go/${data.link.slug}`;
       await navigator.clipboard.writeText(url);
       toast.success("Tracking link copied!");
     } catch {
@@ -142,6 +160,36 @@ export function ProductDetailClient({ product, related }: Props) {
           </NeonButton>
         </motion.div>
       </div>
+
+      {socialProof?.proofs && socialProof.proofs.length > 0 && (
+        <GlassCard hover={false} className="mb-10">
+          <h2 className="font-display font-semibold text-white mb-4">Creators promoting this product</h2>
+          <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory">
+            {socialProof.proofs.slice(0, 8).map((p) => (
+              <a
+                key={p.id}
+                href={p.videoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-shrink-0 w-44 snap-center rounded-xl glass border border-white/10 overflow-hidden group"
+              >
+                <div className="aspect-[9/16] bg-white/5 relative flex items-center justify-center">
+                  <Play className="w-10 h-10 text-white/80 group-hover:text-[var(--accent-cyan)]" />
+                </div>
+                <div className="p-3">
+                  <div className="text-white font-medium text-sm truncate">{p.creatorName}</div>
+                  <div className="text-white/50 text-xs">
+                    {(p.viewCount / 1e6).toFixed(1)}M views · {(p.likeCount / 1000).toFixed(0)}k likes
+                  </div>
+                  <span className={`text-xs ${p.platform === "TIKTOK" ? "text-rose-400" : p.platform === "INSTAGRAM" ? "text-purple-400" : "text-red-400"}`}>
+                    {p.platform}
+                  </span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </GlassCard>
+      )}
 
       <GlassCard hover={false} className="mb-16">
         <div className="flex border-b border-white/10">

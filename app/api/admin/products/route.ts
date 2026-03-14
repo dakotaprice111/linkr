@@ -11,6 +11,7 @@ const schema = z.object({
   imageUrls: z.array(z.string()).default([]),
   niche: z.string().min(1),
   commissionPct: z.number().min(0).max(100),
+  tags: z.array(z.string()).optional().default([]),
 });
 
 export async function POST(req: Request) {

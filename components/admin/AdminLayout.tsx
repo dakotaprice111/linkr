@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { LayoutDashboard, Package, Users } from "lucide-react";
+import { LayoutDashboard, Package, Users, Gift } from "lucide-react";
 
 const nav = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard },
   { href: "/admin/products", label: "Products", icon: Package },
   { href: "/admin/influencers", label: "Influencers", icon: Users },
+  { href: "/admin/referrals", label: "Referrals", icon: Gift },
 ];
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {

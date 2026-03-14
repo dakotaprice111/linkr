@@ -30,11 +30,14 @@ export async function POST(req: Request) {
     }
 
     const slug = nanoid(10);
+    const base = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
+    const fullUrl = `${base.replace(/\/$/, "")}/go/${slug}`;
     const link = await prisma.trackingLink.create({
       data: {
         userId: session.user.id,
         productId,
         slug,
+        fullUrl,
       },
       include: { product: true },
     });

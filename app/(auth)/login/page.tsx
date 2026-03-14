@@ -2,7 +2,7 @@
 
 import { useState, Suspense } from "react";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { NeonButton } from "@/components/ui/NeonButton";
@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 
 function LoginForm() {
   const searchParams = useSearchParams();
-  const from = searchParams.get("from") ?? "/dashboard";
+  const from = searchParams.get("callbackUrl") ?? searchParams.get("from") ?? "/dashboard";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -33,7 +33,14 @@ function LoginForm() {
         return;
       }
       toast.success("Welcome back!");
-      window.location.href = from;
+      const session = await getSession();
+      const role = (session?.user as { role?: string })?.role;
+      const redirectByRole =
+        role === "SELLER" ? "/seller/dashboard"
+        : role === "COMPANY" ? "/company/dashboard"
+        : role === "ADMIN" ? "/admin"
+        : "/dashboard";
+      window.location.href = from === "/login" || from === "/" ? redirectByRole : from;
     } catch {
       setError("Something went wrong");
       setLoading(false);

@@ -61,7 +61,7 @@ export function ProductsContent() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed");
-      const url = `${window.location.origin}/api/links/${data.link.slug}`;
+      const url = data.link.fullUrl || `${window.location.origin}/go/${data.link.slug}`;
       await navigator.clipboard.writeText(url);
       toast.success("Link copied to clipboard!");
     } catch {

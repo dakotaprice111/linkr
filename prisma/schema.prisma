@@ -1,4 +1,4 @@
-// Prisma schema for DropLink Platform
+// LINKR Platform v5 — Promote Anything. Earn Everything.
 // https://pris.ly/d/prisma-schema
 
 generator client {
@@ -11,46 +11,137 @@ datasource db {
 }
 
 model User {
-  id             String    @id @default(cuid())
-  email          String    @unique
-  name           String
-  passwordHash   String?
-  role           Role      @default(INFLUENCER)
-  niches         String[]
-  instagramHandle String?
-  tiktokHandle   String?
-  youtubeHandle  String?
-  isActive       Boolean   @default(true)
-  createdAt      DateTime  @default(now())
-  trackingLinks  TrackingLink[]
-  payoutMethods  PayoutMethod[]
-  payouts        Payout[]
+  id                 String    @id @default(cuid())
+  email              String    @unique
+  emailVerified      DateTime?
+  name               String
+  image              String?
+  passwordHash       String?
+  role               Role      @default(INFLUENCER)
+  plan               Plan      @default(FREE)
+
+  // Influencer
+  niches             String[]
+  bio                String?
+  website            String?
+  instagramHandle    String?
+  tiktokHandle       String?
+  youtubeHandle      String?
+  twitterHandle      String?
+  followerRange      String?
+
+  // Seller / Company
+  brandName          String?
+  companyName        String?
+  industry           String?
+  companySize        String?
+  marketingBudget    String?
+  businessUrl        String?
+  sellingType        String?
+  companyNeeds       String[]  // multi-select for company
+
+  country            String?
+  timezone           String?
+  referralCode       String?   @unique
+  referralBalance    Float     @default(0)
+  totalEarnings      Float     @default(0)
+  pendingBalance     Float     @default(0)
+  isActive           Boolean   @default(true)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @default(now()) @updatedAt
+
+  trackingLinks      TrackingLink[]
+  payoutMethods      PayoutMethod[]
+  payouts            Payout[]
+  referralsGiven     Referral[]  @relation("ReferrerRelation")
+  referralReceived   Referral?   @relation("ReferredRelation")
+  offers             Offer[]     @relation("SellerOffers")
+  videoProofs        ProductVideoProof[]  @relation("VideoProofsSubmitted")
+
+  teamMemberships    TeamMember[]   @relation("TeamMemberUser")
+  teamsOwned         Team[]         @relation("TeamOwner")
+  invitesSent        TeamInvite[]   @relation("InviteSender")
+  invitesReceived    TeamInvite[]   @relation("InviteReceiver")
+  messagesSent       Message[]      @relation("MessageSender")
+  messagesReceived   Message[]      @relation("MessageReceiver")
+  conversations      ConversationParticipant[]
+  userNotifications  Notification[]
+  notifications      NotificationPreference?
 }
 
-model Product {
-  id            String         @id @default(cuid())
-  name          String
-  description   String
-  price         Float
-  imageUrls     String[]
-  niche         String
-  commissionPct Float
-  isActive      Boolean        @default(true)
-  createdAt     DateTime       @default(now())
-  trackingLinks TrackingLink[]
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  @@unique([identifier, token])
+}
+
+model Offer {
+  id                 String    @id @default(cuid())
+  sellerId           String
+  name               String
+  description        String   @db.Text
+  longDescription    String?  @db.Text
+  type               OfferType
+  url                String
+  imageUrls          String[]
+  category           String
+  commissionPct      Float
+  commissionFlat     Float?
+  price              Float?
+  tags               String[]
+  viewCount          Int       @default(0)
+  popularityScore    Int       @default(0)
+  totalCreators      Int       @default(0)
+  avgMonthlyEarnings Float     @default(0)
+  isActive           Boolean   @default(true)
+  isFeatured         Boolean   @default(false)
+  isApproved         Boolean   @default(false)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @default(now()) @updatedAt
+  seller             User      @relation("SellerOffers", fields: [sellerId], references: [id])
+  trackingLinks      TrackingLink[]
+  videoProofs        ProductVideoProof[]
 }
 
 model TrackingLink {
   id        String       @id @default(cuid())
   userId    String
-  productId String
+  offerId   String
   slug      String       @unique
+  fullUrl   String       @default("")
   clicks    Int          @default(0)
   sales     Int          @default(0)
   earnings  Float        @default(0)
+  isActive  Boolean      @default(true)
   createdAt DateTime     @default(now())
   user      User         @relation(fields: [userId], references: [id])
-  product   Product      @relation(fields: [productId], references: [id])
+  offer     Offer        @relation(fields: [offerId], references: [id])
   events    ClickEvent[]
 }
 
@@ -58,11 +149,138 @@ model ClickEvent {
   id              String       @id @default(cuid())
   trackingLinkId  String
   ipAddress       String?
+  userAgent       String?
   country         String?
+  city            String?
   source          String?
+  referer         String?
   convertedToSale Boolean      @default(false)
+  saleAmount      Float?
   createdAt       DateTime     @default(now())
   trackingLink    TrackingLink @relation(fields: [trackingLinkId], references: [id])
+}
+
+model Team {
+  id          String       @id @default(cuid())
+  ownerId     String
+  name        String
+  description String?
+  imageUrl    String?
+  createdAt   DateTime     @default(now())
+  owner       User         @relation("TeamOwner", fields: [ownerId], references: [id])
+  members     TeamMember[]
+  invites     TeamInvite[]
+}
+
+model TeamMember {
+  id       String   @id @default(cuid())
+  teamId   String
+  userId   String
+  role     TeamRole @default(MEMBER)
+  joinedAt DateTime @default(now())
+  team     Team     @relation(fields: [teamId], references: [id])
+  user     User     @relation("TeamMemberUser", fields: [userId], references: [id])
+  @@unique([teamId, userId])
+}
+
+model TeamInvite {
+  id        String       @id @default(cuid())
+  teamId    String
+  senderId  String
+  receiverId String?
+  email     String?
+  message   String?      @db.Text
+  offerId   String?
+  status    InviteStatus @default(PENDING)
+  expiresAt DateTime
+  createdAt DateTime     @default(now())
+  team      Team         @relation(fields: [teamId], references: [id])
+  sender    User         @relation("InviteSender", fields: [senderId], references: [id])
+  receiver  User?        @relation("InviteReceiver", fields: [receiverId], references: [id])
+}
+
+model Conversation {
+  id           String                    @id @default(cuid())
+  createdAt    DateTime                  @default(now())
+  updatedAt    DateTime                  @default(now()) @updatedAt
+  participants ConversationParticipant[]
+  messages     Message[]
+}
+
+model ConversationParticipant {
+  id             String       @id @default(cuid())
+  conversationId String
+  userId         String
+  lastReadAt     DateTime?
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  user           User         @relation(fields: [userId], references: [id])
+  @@unique([conversationId, userId])
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  senderId       String
+  receiverId    String
+  content        String       @db.Text
+  type           MessageType  @default(TEXT)
+  isRead         Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  sender         User         @relation("MessageSender", fields: [senderId], references: [id])
+  receiver       User         @relation("MessageReceiver", fields: [receiverId], references: [id])
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  title     String
+  body      String
+  data      Json?
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
+  user      User             @relation(fields: [userId], references: [id])
+}
+
+model Referral {
+  id          String         @id @default(cuid())
+  referrerId  String
+  referredId  String         @unique
+  code        String
+  level       Int            @default(1)
+  status      ReferralStatus @default(ACTIVE)
+  totalEarned Float          @default(0)
+  createdAt   DateTime       @default(now())
+  referrer    User           @relation("ReferrerRelation", fields: [referrerId], references: [id])
+  referred    User           @relation("ReferredRelation", fields: [referredId], references: [id])
+  earnings    ReferralEarning[]
+}
+
+model ReferralEarning {
+  id          String   @id @default(cuid())
+  referralId  String
+  amount      Float
+  sourceType  String
+  description String?
+  createdAt   DateTime @default(now())
+  referral    Referral @relation(fields: [referralId], references: [id])
+}
+
+model ProductVideoProof {
+  id           String    @id @default(cuid())
+  offerId      String
+  submittedBy  String?
+  platform     Platform
+  creatorName  String
+  videoUrl     String
+  thumbnailUrl String?
+  viewCount    Int       @default(0)
+  likeCount    Int       @default(0)
+  postedAt     DateTime
+  isVerified   Boolean   @default(false)
+  offer        Offer     @relation(fields: [offerId], references: [id])
+  submitter    User?     @relation("VideoProofsSubmitted", fields: [submittedBy], references: [id])
 }
 
 model PayoutMethod {
@@ -80,24 +298,49 @@ model Payout {
   amount    Float
   status    PayoutStatus @default(PENDING)
   method    String
+  reference String?
   createdAt DateTime     @default(now())
   user      User         @relation(fields: [userId], references: [id])
 }
 
-enum Role {
-  INFLUENCER
-  ADMIN
+model NotificationPreference {
+  id              String  @id @default(cuid())
+  userId          String  @unique
+  emailNewSale    Boolean @default(true)
+  emailMilestone  Boolean @default(true)
+  emailPayout     Boolean @default(true)
+  emailWeekly     Boolean @default(true)
+  emailMarketing  Boolean @default(false)
+  emailReferral   Boolean @default(true)
+  emailInvite     Boolean @default(true)
+  emailMessage    Boolean @default(true)
+  pushNewSale     Boolean @default(true)
+  pushMilestone   Boolean @default(true)
+  pushMessage     Boolean @default(true)
+  pushInvite      Boolean @default(true)
+  user            User    @relation(fields: [userId], references: [id])
 }
 
-enum PayoutType {
-  PAYPAL
-  STRIPE
-  BANK
-}
-
-enum PayoutStatus {
-  PENDING
-  PROCESSING
-  PAID
-  FAILED
+enum Role           { INFLUENCER SELLER COMPANY ADMIN }
+enum Plan           { FREE PRO ELITE }
+enum OfferType      { PRODUCT WEBSITE APP SAAS COURSE SERVICE DIGITAL }
+enum PayoutType     { PAYPAL STRIPE BANK CRYPTO }
+enum PayoutStatus   { PENDING PROCESSING PAID FAILED }
+enum ReferralStatus { PENDING ACTIVE SUSPENDED }
+enum Platform       { TIKTOK INSTAGRAM YOUTUBE }
+enum TeamRole       { OWNER MANAGER MEMBER }
+enum InviteStatus   { PENDING ACCEPTED DECLINED EXPIRED }
+enum MessageType    { TEXT IMAGE FILE OFFER_SHARE }
+enum NotificationType {
+  NEW_SALE
+  NEW_CLICK_MILESTONE
+  PAYOUT_PROCESSED
+  NEW_REFERRAL
+  REFERRAL_EARNING
+  TEAM_INVITE_RECEIVED
+  TEAM_INVITE_ACCEPTED
+  NEW_MESSAGE
+  OFFER_APPROVED
+  OFFER_REJECTED
+  CAMPAIGN_UPDATE
 }
