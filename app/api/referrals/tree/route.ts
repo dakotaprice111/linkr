@@ -24,10 +24,7 @@ export async function GET() {
     },
   });
 
-  const level2: Array<{
-    referral: { referred: { id: string; name: string; referralCode: string; createdAt: Date } };
-    earnings: { amount: number }[];
-  }> = [];
+  const level2: typeof level1 = [];
   for (const r of level1) {
     const l2 = await prisma.referral.findMany({
       where: { referrerId: r.referredId },
