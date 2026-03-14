@@ -321,16 +321,65 @@ model NotificationPreference {
   user            User    @relation(fields: [userId], references: [id])
 }
 
-enum Role           { INFLUENCER SELLER COMPANY ADMIN }
-enum Plan           { FREE PRO ELITE }
-enum OfferType      { PRODUCT WEBSITE APP SAAS COURSE SERVICE DIGITAL }
-enum PayoutType     { PAYPAL STRIPE BANK CRYPTO }
-enum PayoutStatus   { PENDING PROCESSING PAID FAILED }
-enum ReferralStatus { PENDING ACTIVE SUSPENDED }
-enum Platform       { TIKTOK INSTAGRAM YOUTUBE }
-enum TeamRole       { OWNER MANAGER MEMBER }
-enum InviteStatus   { PENDING ACCEPTED DECLINED EXPIRED }
-enum MessageType    { TEXT IMAGE FILE OFFER_SHARE }
+enum Role {
+  INFLUENCER
+  SELLER
+  COMPANY
+  ADMIN
+}
+enum Plan {
+  FREE
+  PRO
+  ELITE
+}
+enum OfferType {
+  PRODUCT
+  WEBSITE
+  APP
+  SAAS
+  COURSE
+  SERVICE
+  DIGITAL
+}
+enum PayoutType {
+  PAYPAL
+  STRIPE
+  BANK
+  CRYPTO
+}
+enum PayoutStatus {
+  PENDING
+  PROCESSING
+  PAID
+  FAILED
+}
+enum ReferralStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+}
+enum Platform {
+  TIKTOK
+  INSTAGRAM
+  YOUTUBE
+}
+enum TeamRole {
+  OWNER
+  MANAGER
+  MEMBER
+}
+enum InviteStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  EXPIRED
+}
+enum MessageType {
+  TEXT
+  IMAGE
+  FILE
+  OFFER_SHARE
+}
 enum NotificationType {
   NEW_SALE
   NEW_CLICK_MILESTONE
