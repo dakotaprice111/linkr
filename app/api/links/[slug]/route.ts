@@ -9,10 +9,10 @@ export async function GET(
     const { slug } = await params;
     const link = await prisma.trackingLink.findUnique({
       where: { slug },
-      include: { product: true },
+      include: { offer: true },
     });
     if (!link) {
-      return NextResponse.redirect(new URL("/products", req.url));
+      return NextResponse.redirect(new URL("/browse", req.url));
     }
 
     const url = new URL(req.url);
@@ -32,10 +32,11 @@ export async function GET(
       data: { clicks: { increment: 1 } },
     });
 
-    const productUrl = `${process.env.NEXTAUTH_URL ?? req.url}/products/${link.productId}`;
-    return NextResponse.redirect(productUrl);
+    const base = (process.env.NEXTAUTH_URL ?? req.url).replace(/\/$/, "");
+    const offerUrl = `${base}/browse/${link.offerId}`;
+    return NextResponse.redirect(offerUrl);
   } catch (e) {
     console.error("Link redirect error:", e);
-    return NextResponse.redirect(new URL("/products", req.url));
+    return NextResponse.redirect(new URL("/browse", req.url));
   }
 }

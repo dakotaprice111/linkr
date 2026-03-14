@@ -12,7 +12,7 @@ export async function GET() {
   try {
     const links = await prisma.trackingLink.findMany({
       where: { userId: session.user.id },
-      include: { product: true },
+      include: { offer: true },
     });
 
     const totalClicks = links.reduce((a, l) => a + l.clicks, 0);
