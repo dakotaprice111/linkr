@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 import { NeonButton } from "@/components/ui/NeonButton";
 import toast from "react-hot-toast";
 
-export default function LoginPage() {
+function LoginForm() {
   const searchParams = useSearchParams();
   const from = searchParams.get("from") ?? "/dashboard";
   const [email, setEmail] = useState("");
@@ -103,5 +103,13 @@ export default function LoginPage() {
         </Link>
       </p>
     </motion.div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="w-full max-w-md glass rounded-2xl p-8 animate-pulse h-96" />}>
+      <LoginForm />
+    </Suspense>
   );
 }

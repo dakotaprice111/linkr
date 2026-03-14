@@ -23,10 +23,7 @@ export function NicheStrip() {
                 <Link
                   href={`/${slug}`}
                   className="inline-flex items-center gap-2 rounded-full glass border border-white/10 px-4 py-2.5 text-sm font-medium text-white/90 hover:text-white hover:border-white/20 transition-all whitespace-nowrap"
-                  style={{
-                    // @ts-expect-error CSS variable
-                    ["--hover-glow" as string]: color,
-                  }}
+                  style={{ ["--hover-glow" as string]: color } as React.CSSProperties}
                 >
                   <span>{NICHE_EMOJI[slug] ?? "✨"}</span>
                   {NICHE_LABELS[slug] ?? slug}

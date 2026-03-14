@@ -11,16 +11,18 @@ export async function GET(req: Request) {
     const limit = Math.min(24, Math.max(1, parseInt(searchParams.get("limit") ?? "12", 10)));
     const skip = (page - 1) * limit;
 
-    const where: { isActive: boolean; niche?: string; OR?: { name?: { contains: string; mode: "insensitive" }; description?: { contains: string; mode: "insensitive" } } } = {
+    const where = {
       isActive: true,
+      ...(niche ? { niche } : {}),
+      ...(q
+        ? {
+            OR: [
+              { name: { contains: q, mode: "insensitive" as const } },
+              { description: { contains: q, mode: "insensitive" as const } },
+            ],
+          }
+        : {}),
     };
-    if (niche) where.niche = niche;
-    if (q) {
-      where.OR = [
-        { name: { contains: q, mode: "insensitive" } },
-        { description: { contains: q, mode: "insensitive" } },
-      ];
-    }
 
     const orderBy: { [key: string]: string } =
       sort === "trending"

@@ -119,7 +119,7 @@ export default function DashboardAnalyticsPage() {
                   </Pie>
                   <Tooltip
                     contentStyle={{ background: "rgba(2,2,8,0.9)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 12 }}
-                    formatter={(value: number) => [`${value}%`, "Traffic"]}
+                    formatter={(value: unknown) => [`${value ?? 0}%`, "Traffic"]}
                   />
                 </PieChart>
               </ResponsiveContainer>

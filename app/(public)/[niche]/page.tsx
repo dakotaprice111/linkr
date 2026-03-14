@@ -4,6 +4,8 @@ import { NICHE_SLUGS, NICHE_LABELS } from "@/lib/constants";
 import { NicheStorefront } from "@/components/products/NicheStorefront";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 type Props = { params: Promise<{ niche: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
